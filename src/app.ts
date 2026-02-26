@@ -1,22 +1,12 @@
 import express, { Request, Response } from "express";
 import globalErrorHandleMiddleware from "./app/middlewares/global-error-handler.middleware";
-import notFound from "./app/middlewares/not-found.middleware";
+import notFound from "./app/middlewares/not-found-middleware";
 import router from "./app/router";
-import cors from "cors";
 
-// creat app
+// create app
 const app = express();
 
-// cors setup
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://sports-facility-booking-platform-client.vercel.app",
-    ],
-    credentials: true,
-  }),
-);
+app.use("/uploads", express.static("uploads"));
 
 // parse req.body
 app.use(express.json());

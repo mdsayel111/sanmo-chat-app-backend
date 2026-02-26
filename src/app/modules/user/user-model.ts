@@ -11,6 +11,8 @@ const userSchema = new Schema<TUser>({
   },
   phone: { type: String, required: true },
   address: { type: String},
+  designation: { type: String},
+  image: { type: String},
   isDeleted: { type: Boolean, required: false, select: false },
 }, {timestamps: true});
 

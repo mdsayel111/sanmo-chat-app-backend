@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import catchAsync from "../../middlewares/HOF.middlewares/catch-async.middleware";
+import catchAsync from "../../middlewares/HOF-middlewares/catch-async-middleware";
 import sendResponse from "../../utils/send-response";
 import authService from "./auth-service";
 import { createToken } from "../../../lib/jwt";

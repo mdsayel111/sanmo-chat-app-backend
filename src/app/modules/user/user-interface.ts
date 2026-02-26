@@ -11,5 +11,7 @@ export type TUser = {
   phone: string;
   role: TRole;
   address: string;
+  designation: string;
+  image: string;
   isDeleted: boolean;
 };

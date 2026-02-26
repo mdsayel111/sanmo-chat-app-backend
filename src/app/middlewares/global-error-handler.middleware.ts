@@ -3,17 +3,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint  no-unused-vars: "error" */
 import { ErrorRequestHandler } from "express";
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import multer from "multer";
 import { ZodError } from "zod";
-import mongooseValidationErrorHandler from "../error-handler/mongoose-validation-error-handler";
-import zodErrorHandler from "../error-handler/zod.error-handler";
-import { TErrorObj } from "../interface/error";
-import mongooseDuplicateKeyErrorHandler from "../error-handler/mongoose-duplicate-key-error-handler";
 import AppError from "../custom-error/app-error";
 import appErrorHandler from "../error-handler/app-error-handler";
-import mongooseCastErrorHandler from "../error-handler/mongoose-cast-error-handler";
-import jwt from "jsonwebtoken";
 import jwtErrorHandler from "../error-handler/jwt-error-handler";
+import mongooseCastErrorHandler from "../error-handler/mongoose-cast-error-handler";
+import mongooseDuplicateKeyErrorHandler from "../error-handler/mongoose-duplicate-key-error-handler";
+import mongooseValidationErrorHandler from "../error-handler/mongoose-validation-error-handler";
+import multerErrorHandler from "../error-handler/multer-error-handler";
+import zodErrorHandler from "../error-handler/zod.error-handler";
+import { TErrorObj } from "../interface/error";
 
 // global error handle middleware
 const globalErrorHandleMiddleware: ErrorRequestHandler = (
@@ -93,6 +95,12 @@ const globalErrorHandleMiddleware: ErrorRequestHandler = (
 
     // pass err to appErrorHandler
     newErrorObj = appErrorHandler(err);
+  }
+
+  // if error comes from multer
+  if (err instanceof multer.MulterError) {
+    status = 400;
+    newErrorObj = multerErrorHandler(err);
   }
 
   // if newErrorObj is not null set errObj = newObj
