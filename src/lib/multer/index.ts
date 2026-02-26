@@ -120,7 +120,7 @@ export const createUploader = ({
 };
 
 export const deleteFileIfExists = async (
-  filePath?: string | null
+  filePath?: string | null,
 ): Promise<void> => {
   if (!filePath) return;
 
@@ -135,10 +135,11 @@ export const deleteFileIfExists = async (
 
     // Delete file
     await fs.promises.unlink(absolutePath);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Ignore "file not found" errors
-    if (error.code !== "ENOENT") {
-      console.warn("File deletion error:", error.message);
-    }
+    // if (error.code !== "ENOENT") {
+    //   console.warn("File deletion error:", error.message);
+    // }
   }
 };

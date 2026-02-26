@@ -6,12 +6,17 @@ import { TUser } from "../user/user-interface";
 import { User } from "../user/user-model";
 
 // update user profile service
-const updateUserProfile = async (payload: TUser &{emergencyContactName: string, emergencyContactPhone: string, emergencyContactRelation: string}) => {
+const updateUserProfile = async (
+  payload: TUser & {
+    emergencyContactName: string;
+    emergencyContactPhone: string;
+    emergencyContactRelation: string;
+  },
+) => {
   const userFromDb = await User.findOne({ phone: payload.phone });
   if (!userFromDb) {
     throw new AppError(404, "User not found");
   }
-  console.log(payload, "payload")
 
   const oldImage = userFromDb.image;
 
@@ -25,7 +30,7 @@ const updateUserProfile = async (payload: TUser &{emergencyContactName: string, 
         relation: payload.emergencyContactRelation,
       },
     },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   if (!updatedUser) {
@@ -43,9 +48,7 @@ const updateUserProfile = async (payload: TUser &{emergencyContactName: string, 
 // get user profile service
 const getUserProfile = async (phone: string) => {
   // get user profile
-  const user = await User.findOne({ phone: phone }).select(
-    "+isDeleted",
-  );
+  const user = await User.findOne({ phone: phone }).select("+isDeleted");
 
   if (!user) {
     throw new AppError(400, "Failed to get user profile !");
