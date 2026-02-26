@@ -6,22 +6,22 @@ import { User } from "../user/user-model";
 
 // update user profile service
 const updateUserProfile = async (payload: TUser) => {
-    // update user profile
-    const user = await User.findOneAndUpdate({ phone: payload.phone }, payload, {
-        new: true,
-        runValidators: true,
-    });
+  // update user profile
+  const user = await User.findOneAndUpdate({ phone: payload.phone }, payload, {
+    new: true,
+    runValidators: true,
+  });
 
-    if (!user) {
-        throw new AppError(400, "Failed to update user profile !");
-    }
-    
-    return user.toObject();
+  if (!user) {
+    throw new AppError(400, "Failed to update user profile !");
+  }
+
+  return user.toObject();
 };
 
 // user services
 const userService = {
-    updateUserProfile,
+  updateUserProfile,
 };
 
 export default userService;

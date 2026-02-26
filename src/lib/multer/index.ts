@@ -68,7 +68,6 @@
 //   });
 // };
 
-
 import multer from "multer";
 import type { Request } from "express";
 import path from "path";
@@ -99,19 +98,13 @@ export const createUploader = ({
     },
 
     filename: (req: Request, file, cb) => {
-      const uniqueSuffix = `${Date.now()}-${Math.round(
-        Math.random() * 1e9
-      )}`;
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
       const ext = path.extname(file.originalname);
       cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
     },
   });
 
-  const fileFilter: multer.Options["fileFilter"] = (
-    req,
-    file,
-    cb
-  ) => {
+  const fileFilter: multer.Options["fileFilter"] = (req, file, cb) => {
     if (!allowedTypes.includes(file.mimetype)) {
       cb(new Error(`Invalid file type. Allowed: ${allowedTypes.join(", ")}`));
       return;

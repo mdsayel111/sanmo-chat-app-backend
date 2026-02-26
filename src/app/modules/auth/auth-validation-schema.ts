@@ -11,17 +11,12 @@ import z from "zod";
 
 // login validation schema
 const loginValidationSchema = z.object({
-  phone: z
-    .string({ required_error: "Phone is required !" }).min(11).max(11),
+  phone: z.string({ required_error: "Phone is required !" }).min(11).max(11),
   otp: z.string({ required_error: "OTP is required !" }).min(6).max(6),
 });
 
 // signup validation schema
 const getOTPValidationSchema = loginValidationSchema.pick({ phone: true });
-
-
-
-
 
 const authZodSchemas = {
   // signupValidationSchema,

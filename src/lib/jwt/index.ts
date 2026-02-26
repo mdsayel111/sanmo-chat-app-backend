@@ -9,7 +9,6 @@ export const createToken = (payload: JwtPayload) => {
   return token;
 };
 
-
 // creat deoded data function
 export const getDecodedData = async (tokenFromHeader: string) => {
   // extact token from  Bearer JWT_TOKEN this format
@@ -20,6 +19,3 @@ export const getDecodedData = async (tokenFromHeader: string) => {
   ) as JwtPayload;
   return decoded;
 };
-
-
-

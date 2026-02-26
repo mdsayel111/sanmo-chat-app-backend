@@ -14,8 +14,8 @@ const httpServer = http.createServer(app);
 // create socket server
 export const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: "*"
-  }
+    origin: "*",
+  },
 });
 
 let server: Server;

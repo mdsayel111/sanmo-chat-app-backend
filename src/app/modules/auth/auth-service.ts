@@ -4,7 +4,6 @@ import AppError from "../../custom-error/app-error";
 import { TUser } from "../user/user-interface";
 import { User } from "../user/user-model";
 
-
 // Temp otp
 const otpStore: Record<string, string> = {};
 
@@ -22,32 +21,30 @@ const getOTP = async (payload: Pick<TUser, "phone">) => {
 };
 
 const verifyOTP = async (payload: Pick<TUser, "phone"> & { otp: string }) => {
-  
   // check if otp exist or not
   if (!otpStore[payload.phone]) {
     throw new AppError(400, "OTP is not exist !");
   }
-  
+
   // check if otp is correct or not
   if (otpStore[payload.phone] !== payload.otp) {
     throw new AppError(400, "OTP is incorrect !");
   }
-  
+
   const userFromDB = await User.findOne({ phone: payload.phone }).select(
-  "+isDeleted",
-);
+    "+isDeleted",
+  );
 
-// if user exist
-if (userFromDB) {
-  return userFromDB.toObject();
-}else{
-  const data = await createUser(payload)
-  if(data){
-  delete otpStore[payload.phone]
+  // if user exist
+  if (userFromDB) {
+    return userFromDB.toObject();
+  } else {
+    const data = await createUser(payload);
+    if (data) {
+      delete otpStore[payload.phone];
+    }
+    return data;
   }
-  return data;
-}
-
 };
 
 // create user service

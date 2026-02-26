@@ -36,11 +36,11 @@ const getOTP: RequestHandler = catchAsync(async (req, res) => {
 // wrap the middleware by catch async for async error handling
 const verifyOTP: RequestHandler = catchAsync(async (req, res) => {
   // verify otp
-  const userData =await authService.verifyOTP(req.body);
-const data ={
-  user: userData,
-  token: createToken({ phone: userData.phone, role: userData.role })
-}
+  const userData = await authService.verifyOTP(req.body);
+  const data = {
+    user: userData,
+    token: createToken({ phone: userData.phone, role: userData.role }),
+  };
   // send response
   sendResponse(res, {
     success: true,
