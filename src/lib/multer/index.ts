@@ -118,3 +118,27 @@ export const createUploader = ({
     fileFilter,
   });
 };
+
+export const deleteFileIfExists = async (
+  filePath?: string | null
+): Promise<void> => {
+  if (!filePath) return;
+
+  try {
+    // Convert relative path to absolute
+    const absolutePath = path.isAbsolute(filePath)
+      ? filePath
+      : path.join(process.cwd(), filePath);
+
+    // Check existence
+    await fs.promises.access(absolutePath);
+
+    // Delete file
+    await fs.promises.unlink(absolutePath);
+  } catch (error: any) {
+    // Ignore "file not found" errors
+    if (error.code !== "ENOENT") {
+      console.warn("File deletion error:", error.message);
+    }
+  }
+};

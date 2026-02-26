@@ -14,6 +14,14 @@ const userSchema = new Schema<TUser>(
     address: { type: String },
     designation: { type: String },
     image: { type: String },
+    emergencyContact: {
+      type: {
+        name: { type: String },
+        phone: { type: String },
+        relation: { type: String },
+      },
+      required: false,
+    },
     isDeleted: { type: Boolean, required: false, select: false },
   },
   { timestamps: true },

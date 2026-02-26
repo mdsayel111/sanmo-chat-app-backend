@@ -13,5 +13,10 @@ export type TUser = {
   address: string;
   designation: string;
   image: string;
+  emergencyContact: {
+    name: string;
+    phone: string;
+    relation: string;
+  };
   isDeleted: boolean;
 };

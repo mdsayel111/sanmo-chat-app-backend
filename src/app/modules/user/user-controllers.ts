@@ -20,9 +20,25 @@ const updateUserProfile: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+// get user profile middleware
+// wrap the middleware by catch async for async error handling
+const getUserProfile: RequestHandler = catchAsync(async (req, res) => {
+  const phone = req.user?.phone as string;
+
+  // get user profile
+  const userInfo = await userService.getUserProfile(phone);
+
+  res.status(200).json({
+    success: true,
+    message: "User profile retrieved successfully",
+    data: userInfo,
+  });
+});
+
 // auth controllers
 const userControllers = {
   updateUserProfile,
+  getUserProfile,
 };
 
 export default userControllers;

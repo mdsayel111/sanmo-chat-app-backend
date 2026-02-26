@@ -23,4 +23,6 @@ userRouter.put(
   userControllers.updateUserProfile,
 );
 
+userRouter.get("/profile", authorize("user"), userControllers.getUserProfile);
+
 export default userRouter;
