@@ -6,7 +6,6 @@ import userService from "./user-service";
 // wrap the middleware by catch async for async error handling
 const updateUserProfile: RequestHandler = catchAsync(async (req, res) => {
   const updatedUserData = { ...req.body, phone: req.user?.phone };
-  console.log(req.file);
   if (req.file) {
     updatedUserData.image = req.file.path;
   }
