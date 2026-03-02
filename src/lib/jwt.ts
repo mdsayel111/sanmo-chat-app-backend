@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import config from "../../config";
+import config from "../config";
 
 // createToken function
 export const createToken = (payload: JwtPayload) => {
@@ -11,6 +11,7 @@ export const createToken = (payload: JwtPayload) => {
 
 // creat deoded data function
 export const getDecodedData = async (tokenFromHeader: string) => {
+  console.log(tokenFromHeader, "token")
   // extact token from  Bearer JWT_TOKEN this format
   const extactOrginalToken = tokenFromHeader.split(" ")[1];
   const decoded = jwt.verify(
