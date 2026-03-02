@@ -6,12 +6,13 @@ import catchAsync from "./catch-async-middleware";
 // HOF for validate req.body by zod schema
 const validateRequestBody = (
   schema: AnyZodObject | ZodEffects<any, any, any>,
+  data?: any,
 ) => {
   // creat a middleware for validate function
   const validationHandler: RequestHandler = catchAsync(
     async (req, res, next) => {
       // parse data by zod schema
-      const parseData = await schema.parseAsync(req.body);
+      const parseData = await schema.parseAsync(data || req.body);
 
       // set parse data to req.body
       req.body = parseData;

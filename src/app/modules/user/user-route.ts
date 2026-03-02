@@ -23,6 +23,12 @@ userRouter.put(
   userControllers.updateUserProfile,
 );
 
+userRouter.get(
+  "/",
+  authorizeApiMiddleware("user"),
+  userControllers.getUserProfile,
+);
+
 userRouter.get("/profile", authorizeApiMiddleware("user"), userControllers.getUserProfile);
 
 export default userRouter;

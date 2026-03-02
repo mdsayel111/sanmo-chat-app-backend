@@ -11,7 +11,6 @@ export const createToken = (payload: JwtPayload) => {
 
 // creat deoded data function
 export const getDecodedData = async (tokenFromHeader: string) => {
-  console.log(tokenFromHeader, "token")
   // extact token from  Bearer JWT_TOKEN this format
   const extactOrginalToken = tokenFromHeader.split(" ")[1];
   const decoded = jwt.verify(

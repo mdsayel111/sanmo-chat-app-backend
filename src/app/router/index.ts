@@ -1,6 +1,7 @@
 import express from "express";
 import authRouter from "../modules/auth/auth-router";
 import userRouter from "../modules/user/user-route";
+import chatRouter from "../modules/chat/chat-routes";
 
 // /api router
 const router = express.Router();
@@ -14,6 +15,10 @@ const routers = [
   {
     path: "/user",
     router: userRouter,
+  },
+  {
+    path: "/chat",
+    router: chatRouter,
   },
 ];
 

@@ -23,8 +23,19 @@ const callSchema = z.object({
     }),
 });
 
-export const createMessageZodSchema = z.union([
-    textSchema,
-    fileSchema,
-    callSchema,
-]);
+const searchChatValidationSchema = z.object({
+    searchQuery: z.string(),
+});
+
+
+// export const chatZodSchemas = z.union([
+//     textSchema,
+//     fileSchema,
+//     callSchema,
+//     searchChatValidationSchema,
+// ]);
+
+const chatZodSchemas = {
+}
+
+export default chatZodSchemas;
