@@ -6,6 +6,8 @@ import { User } from "../user/user-model";
 import { Message } from "./message-model";
 
 // get all messages middleware
+import { Types } from "mongoose";
+
 const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
     const { type, id } = req.params;
 
@@ -33,11 +35,30 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
     }
 
     if (type === "private") {
-        const chatFromDB = await Chat.findById(id).populate("members").select("members");
+        // populate members fully
+        const chatFromDB = await Chat.findById(id)
+            .populate("members")
+            .select("members");
 
+        if (!chatFromDB) {
+            return sendResponse(res, {
+                success: false,
+                status: 404,
+                message: "Chat not found",
+                data: null,
+            });
+        }
+
+        // Type assertion: tell TS that members are Users
+        const members = chatFromDB.members as unknown as Array<{ _id: Types.ObjectId; name: string }>;
+
+        // find the other member (not current user)
+        const chat = members.find(
+            (m) => m._id.toString() !== req.user?._id.toString()
+        );
 
         const messages = await Message.find({ chat: id });
-        const chat = chatFromDB?.members.find(m => (m?._id).toString() !== req.user?._id.toString());
+
         return sendResponse(res, {
             success: true,
             status: 200,
@@ -56,6 +77,7 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
         data: null,
     });
 });
+
 const createMessage: RequestHandler = catchAsync(async (req, res) => {
     const { type, id } = req.params
     if (type === "user") {

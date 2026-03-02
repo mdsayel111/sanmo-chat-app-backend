@@ -39,7 +39,7 @@ const verifyOTP: RequestHandler = catchAsync(async (req, res) => {
   const userData = await authService.verifyOTP(req.body);
   const data = {
     user: userData,
-    token: createToken({ phone: userData.phone, role: userData.role, _id: userData._id }),
+    token: createToken({ phone: userData.phone, role: userData.role, _id: userData._id.toString() }),
   };
   // send response
   sendResponse(res, {
