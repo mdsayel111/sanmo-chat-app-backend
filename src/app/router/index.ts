@@ -2,6 +2,8 @@ import express from "express";
 import authRouter from "../modules/auth/auth-router";
 import userRouter from "../modules/user/user-route";
 import chatRouter from "../modules/chat/chat-routes";
+import path from "path";
+import messageRouter from "../modules/message/message-routes";
 
 // /api router
 const router = express.Router();
@@ -20,6 +22,10 @@ const routers = [
     path: "/chat",
     router: chatRouter,
   },
+  {
+    path: "/message",
+    router: messageRouter,
+  }
 ];
 
 // add all routers in router

@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import catchAsync from "../../middlewares/HOF-middlewares/catch-async-middleware";
 import userService from "./user-service";
+import sendResponse from "../../utils/send-response";
 
 // update user profile middleware
 // wrap the middleware by catch async for async error handling
@@ -35,10 +36,29 @@ const getUserProfile: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUserById: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id as string;
+
+  // get user profile
+  const userInfo = await userService.getUserProfileById(id);
+
+  // res.status(200).json({
+  //   success: true,
+  //   message: "User profile retrieved successfully",
+  //   data: userInfo,
+  // });
+  sendResponse(res, {
+    success: true,
+    message: "User profile retrieved successfully",
+    data: userInfo,
+  });
+});
+
 // auth controllers
 const userControllers = {
   updateUserProfile,
   getUserProfile,
+  getSingleUserById,
 };
 
 export default userControllers;

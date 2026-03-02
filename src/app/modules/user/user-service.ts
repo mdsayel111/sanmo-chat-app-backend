@@ -57,10 +57,22 @@ const getUserProfile = async (phone: string) => {
   return user.toObject();
 };
 
+const getUserProfileById = async (id: string) => {
+  // get user profile
+  const user = await User.findById(id).select("-password -isDeleted");
+
+  if (!user) {
+    throw new AppError(400, "Failed to get user profile !");
+  }
+
+  return user.toObject();
+};
+
 // user services
 const userService = {
   updateUserProfile,
   getUserProfile,
+  getUserProfileById
 };
 
 export default userService;

@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 export type MessageType = "text" | "file" | "call";
 export type CallType = "audio" | "video";
 
@@ -26,4 +28,5 @@ export type TMessage = {
     updatedAt?: Date;
     readBy?: string[];
     isDeleted?: boolean;
+    chat: ObjectId;
 }

@@ -4,10 +4,11 @@ import { Chat } from "./chat-mode";
 import { User } from "../user/user-model";
 import AppError from "../../custom-error/app-error";
 import sendResponse from "../../utils/send-response";
+import { late } from "zod";
 
 // update user profile middleware
 // wrap the middleware by catch async for async error handling
-const getChats: RequestHandler = catchAsync(async (req, res) => {
+const getSearcheChats: RequestHandler = catchAsync(async (req, res) => {
     const searchQuery = (req.query.searchQuery as string)?.trim() || "";
 
     if (!searchQuery) {
@@ -50,7 +51,7 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
             path: "members",
             select: "name phone image",
         })
-        .select("members");
+        .select("members lastMessage")
 
     const formattedPrivateChats = privateChats.map(chat => {
         const otherUser = (chat.members as any[]).find(
@@ -76,15 +77,15 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
 
         return {
             type: "private",
-            id: chat._id, // conversation id
+            _id: chat._id, // conversation id
             name: otherUser?.name,
             phone: otherUser?.phone,
             image: otherUser?.image,
             searchField,
             matchScore,
+            lastMessage: chat.lastMessage,
         };
     });
-
     /*
      ===============================
      2️⃣ Users WITHOUT Private Chat
@@ -128,7 +129,7 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
 
         return {
             type: "user",
-            id: user._id, // user id (new private chat)
+            _id: user._id, // user id (new private chat)
             name: user.name,
             phone: user.phone,
             image: user.image,
@@ -148,7 +149,7 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
         name: { $regex: searchQuery, $options: "i" },
         members: currentUserId,
     })
-        .select("name image")
+        .select("name image lastMessage")
         .limit(30);
 
     const formattedGroups = groups.map(group => {
@@ -157,11 +158,12 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
 
         return {
             type: "group",
-            id: group._id,
+            _id: group._id,
             name: group.name,
             image: group.image,
             searchField: nameMatch > 0 ? "name" : "",
             matchScore: nameMatch,
+            lastMessage: group.lastMessage,
         };
     });
 
@@ -193,7 +195,6 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
             return (a.name || "").localeCompare(b.name || "");
         })
         .map(({ searchField, matchScore, ...rest }) => rest);
-    console.log(combinedResults)
     sendResponse(res, {
         success: true,
         message: "Chats retrieved successfully",
@@ -201,9 +202,20 @@ const getChats: RequestHandler = catchAsync(async (req, res) => {
     });
 });
 
+const getChats: RequestHandler = catchAsync(async (req, res) => {
+    const chats = await Chat.find({}).populate("members lastMessage").select("members lastMessage type image name");
+    console.log(chats)
+    sendResponse(res, {
+        success: true,
+        message: "Chats retrieved successfully",
+        data: chats,
+    });
+})
+
 // auth controllers
 const chatControllers = {
-    getChats,
+    getSearcheChats,
+    getChats
 };
 
 export default chatControllers;

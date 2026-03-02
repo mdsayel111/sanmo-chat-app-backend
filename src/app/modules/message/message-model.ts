@@ -43,8 +43,13 @@ const messageSchema = new Schema<TMessage>(
                 ref: "User",
             },
         ],
+        chat: {
+            type: Schema.Types.ObjectId,
+            ref: "Chat",
+            required: true,
+        },
     },
     { timestamps: true }
 );
 
-export const Chat = model<TMessage>("Message", messageSchema);
+export const Message = model<TMessage>("Message", messageSchema);

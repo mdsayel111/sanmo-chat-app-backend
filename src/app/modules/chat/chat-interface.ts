@@ -4,6 +4,7 @@ export type TChat = {
     id: string;
     members: [ObjectId];
     name: string;
-    image: string;
+    image?: string;
     type: "group" | "private";
+    lastMessage?: ObjectId;
 }

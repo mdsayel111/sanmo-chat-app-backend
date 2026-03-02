@@ -43,7 +43,6 @@ export const authorizeSocketMiddleware =
     async (socket: Socket, next: (err?: Error) => void) => {
       try {
         const token = socket.handshake.auth?.token;
-
         if (!token) {
           return next(new Error("Authentication required"));
         }

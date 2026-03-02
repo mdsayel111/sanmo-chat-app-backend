@@ -29,6 +29,12 @@ userRouter.get(
   userControllers.getUserProfile,
 );
 
+userRouter.get(
+  "/:id",
+  authorizeApiMiddleware("user"),
+  userControllers.getSingleUserById,
+);
+
 userRouter.get("/profile", authorizeApiMiddleware("user"), userControllers.getUserProfile);
 
 export default userRouter;
