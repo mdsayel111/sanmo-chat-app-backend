@@ -1,7 +1,7 @@
 import express from "express";
 import validateRequestBody from "../../middlewares/HOF-middlewares/validate-middleware";
 import authControllers from "./auth-controllers";
-import authZodSchemas from "./auth-validation-schema";
+import authZodSchemas from "./auth-validation-schemas";
 
 // create router
 const authRouter = express.Router();

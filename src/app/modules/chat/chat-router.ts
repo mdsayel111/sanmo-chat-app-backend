@@ -9,7 +9,7 @@ const chatRouter = express.Router();
 chatRouter.get(
     "/search-chats",
     authorizeApiMiddleware("user"),
-    chatControllers.getSearcheChats,
+    chatControllers.getSearchChats,
 );
 
 chatRouter.get(

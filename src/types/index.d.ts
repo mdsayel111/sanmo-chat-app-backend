@@ -1,4 +1,4 @@
-import { TRole } from "../app/modules/user/user-interface";
+import { TRole } from "../app/modules/user/user-interfaces";
 
 // Extend the JwtPayload interface
 declare module "jsonwebtoken" {
@@ -24,5 +24,11 @@ declare module "../app/interface/test.interface.ts" {
     phone: string;
     role: string;
     _id: string;
+  }
+}
+
+declare module "socket.io" {
+  interface Socket {
+    user?: JwtPayload; // or your custom decoded type
   }
 }

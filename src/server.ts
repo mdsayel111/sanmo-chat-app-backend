@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 import http, { Server } from "http";
 import mongoose from "mongoose";
-import { Server as SocketIOServer, Socket } from "socket.io";
+import { Server as SocketIOServer } from "socket.io";
 
 import app from "./app";
-import config from "./config";
-import { registerChatHandlers } from "./app/modules/chat/call-socket";
 import { authorizeSocketMiddleware } from "./app/middlewares/HOF-middlewares/authorization-middleware";
+import { registerChatHandlers } from "./app/modules/chat/call-socket";
+import config from "./config";
+import { initIO, socketUserStore } from "./temporaty-stores/socket";
 
 const port = config.port;
 
@@ -20,6 +21,8 @@ export const io = new SocketIOServer(httpServer, {
   },
 });
 
+initIO(io);
+
 let server: Server;
 
 // authenticate socket connection
@@ -29,11 +32,14 @@ io.use(authorizeSocketMiddleware("user"));
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
+  socketUserStore[socket.user._id] = socket.id;
+
   registerChatHandlers(io, socket);
 
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
+
 });
 
 // handle unhandledRejection

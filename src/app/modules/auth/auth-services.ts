@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
+import { otpStore } from "../../../temporaty-stores/auth";
 import AppError from "../../custom-error/app-error";
-import { TUser } from "../user/user-interface";
+import { TUser } from "../user/user-interfaces";
 import { User } from "../user/user-model";
-
-// Temp otp
-const otpStore: Record<string, string> = {};
 
 // create otp service
 const getOTP = async (payload: Pick<TUser, "phone">) => {

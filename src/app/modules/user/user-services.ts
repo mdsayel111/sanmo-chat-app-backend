@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-vars */
 import { deleteFileIfExists } from "../../../lib/multer";
 import AppError from "../../custom-error/app-error";
-import { TUser } from "../user/user-interface";
-import { User } from "../user/user-model";
+import { TUser } from "./user-interfaces";
+import { User } from "./user-model";
 
 // update user profile service
 const updateUserProfile = async (

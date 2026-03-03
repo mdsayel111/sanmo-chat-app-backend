@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../custom-error/app-error";
-import { TRole } from "../../modules/user/user-interface";
+import { TRole } from "../../modules/user/user-interfaces";
 import { getDecodedData } from "../../../lib/jwt";
 import { Socket } from "socket.io";
 
@@ -55,7 +55,7 @@ export const authorizeSocketMiddleware =
         }
 
         // attach to socket
-        socket.data.user = decoded;
+        socket.user = decoded;
 
         next();
       } catch (error) {

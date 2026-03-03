@@ -3,7 +3,7 @@ import { createUploader } from "../../../lib/multer";
 import { authorizeApiMiddleware } from "../../middlewares/HOF-middlewares/authorization-middleware";
 import validateRequestBody from "../../middlewares/HOF-middlewares/validate-middleware";
 import userControllers from "./user-controllers";
-import userZodSchemas from "./user-validation-schema";
+import userZodSchemas from "./user-validation-schemas";
 
 const upload = createUploader({
   destination: "uploads/images",

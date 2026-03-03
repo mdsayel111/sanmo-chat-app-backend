@@ -7,6 +7,8 @@ import { Message } from "./message-model";
 
 // get all messages middleware
 import { Types } from "mongoose";
+import { io } from "../../../server";
+import { socketUserStore } from "../../../temporaty-stores/socket";
 
 const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
     const { type, id } = req.params;
@@ -32,9 +34,7 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
                 messages: [],
             },
         });
-    }
-
-    if (type === "private") {
+    } else if (type === "private") {
         // populate members fully
         const chatFromDB = await Chat.findById(id)
             .populate("members")
@@ -53,7 +53,7 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
         const members = chatFromDB.members as unknown as Array<{ _id: Types.ObjectId; name: string }>;
 
         // find the other member (not current user)
-        const chat = members.find(
+        const otherUserInfo = members.find(
             (m) => m._id.toString() !== req.user?._id.toString()
         );
 
@@ -64,7 +64,7 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
             status: 200,
             message: "Messages fetched successfully",
             data: {
-                chat,
+                chat: otherUserInfo,
                 messages,
             },
         });
@@ -97,7 +97,47 @@ const createMessage: RequestHandler = catchAsync(async (req, res) => {
             chat._id,
             { lastMessage: message._id },
             { new: true }
-        );
+        ).populate("members lastMessage");
+
+        io.to(socketUserStore[id as string]).emit("chat:receive", updatedChat);
+
+        return sendResponse(res, {
+            success: false,
+            status: 200,
+            message: "No messages found",
+            data: {
+                chat: updatedChat,
+                message,
+            },
+        });
+    } else if (type === "private") {
+        const chat = await Chat.findById(id);
+
+        if (!chat) {
+            return sendResponse(res, {
+                success: false,
+                status: 404,
+                message: "Chat not found",
+                data: null,
+            });
+        }
+
+        const message = await Message.create({
+            sender: req.user?._id,
+            type: req.body.type,
+            text: req.body.text,
+            chat: id,
+        });
+
+        const updatedChat = await Chat.findByIdAndUpdate(
+            chat._id,
+            { lastMessage: message._id },
+            { new: true }
+        ).populate("members lastMessage");
+
+
+        io.to(socketUserStore[req.user?._id as string]).emit("message:receive", updatedChat);
+
         return sendResponse(res, {
             success: false,
             status: 200,

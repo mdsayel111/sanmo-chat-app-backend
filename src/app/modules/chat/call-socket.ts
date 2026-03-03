@@ -1,13 +1,13 @@
 // socket/chat.socket.ts
 import { Server, Socket } from "socket.io";
-import { createMessage } from "./chat-service";
+import chatService from "./chat-services";
 
 export const registerChatHandlers = (
     io: Server,
     socket: Socket
 ) => {
     socket.on("chat:send", async (data) => {
-        const saved = await createMessage(data);
+        const saved = await chatService.createMessage(data);
 
         io.to(data.receiver).emit("chat:receive", saved);
     });

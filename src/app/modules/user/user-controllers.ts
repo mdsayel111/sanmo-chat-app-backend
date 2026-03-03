@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import catchAsync from "../../middlewares/HOF-middlewares/catch-async-middleware";
-import userService from "./user-service";
+import userService from "./user-services";
 import sendResponse from "../../utils/send-response";
 
 // update user profile middleware

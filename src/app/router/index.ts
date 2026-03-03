@@ -1,9 +1,9 @@
 import express from "express";
 import authRouter from "../modules/auth/auth-router";
-import userRouter from "../modules/user/user-route";
-import chatRouter from "../modules/chat/chat-routes";
+import userRouter from "../modules/user/user-router";
+import chatRouter from "../modules/chat/chat-router";
 import path from "path";
-import messageRouter from "../modules/message/message-routes";
+import messageRouter from "../modules/message/message-router";
 
 // /api router
 const router = express.Router();
