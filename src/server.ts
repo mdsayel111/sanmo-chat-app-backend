@@ -5,9 +5,9 @@ import { Server as SocketIOServer } from "socket.io";
 
 import app from "./app";
 import { authorizeSocketMiddleware } from "./app/middlewares/HOF-middlewares/authorization-middleware";
-import { registerChatHandlers } from "./app/modules/chat/call-socket";
 import config from "./config";
 import { initIO, socketUserStore } from "./temporaty-stores/socket";
+import { registerCallHandlers } from "./app/modules/call/call-socket";
 
 const port = config.port;
 
@@ -34,8 +34,8 @@ io.on("connection", (socket) => {
 
   socketUserStore[socket.user._id] = socket.id;
 
-  registerChatHandlers(io, socket);
-
+  // registerChatHandlers(io, socket);
+  registerCallHandlers(socket);
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
