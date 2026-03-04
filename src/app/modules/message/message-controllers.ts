@@ -147,7 +147,7 @@ const createMessage: RequestHandler = catchAsync(async (req, res) => {
 
         io.to(socketUserStore[reciverUserInfo?._id.toString() as string]).emit("message:receive", message);
 
-        io.emit(`chat:receive:${chatFromDB?._id.toString()}`, updatedChat);
+        io.emit(`message:receive:${chatFromDB?._id.toString()}`, message);
 
         return sendResponse(res, {
             success: false,
