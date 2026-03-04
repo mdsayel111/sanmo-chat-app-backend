@@ -53,7 +53,7 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
         const members = chatFromDB.members as unknown as Array<{ _id: Types.ObjectId; name: string }>;
 
         // find the other member (not current user)
-        const otherUserInfo = members.find(
+        const reciverUserInfo = members.find(
             (m) => m._id.toString() !== req.user?._id.toString()
         );
 
@@ -64,7 +64,7 @@ const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
             status: 200,
             message: "Messages fetched successfully",
             data: {
-                chat: otherUserInfo,
+                chat: reciverUserInfo,
                 messages,
             },
         });
@@ -111,9 +111,9 @@ const createMessage: RequestHandler = catchAsync(async (req, res) => {
             },
         });
     } else if (type === "private") {
-        const chat = await Chat.findById(id);
+        const chatFromDB = await Chat.findById(id).populate("members");
 
-        if (!chat) {
+        if (!chatFromDB) {
             return sendResponse(res, {
                 success: false,
                 status: 404,
@@ -130,22 +130,30 @@ const createMessage: RequestHandler = catchAsync(async (req, res) => {
         });
 
         const updatedChat = await Chat.findByIdAndUpdate(
-            chat._id,
+            chatFromDB._id,
             { lastMessage: message._id },
             { new: true }
         ).populate("members lastMessage");
 
+        // Type assertion: tell TS that members are Users
+        const members = chatFromDB.members as unknown as Array<{ _id: Types.ObjectId; name: string }>;
 
-        io.to(socketUserStore[req.user?._id as string]).emit("message:receive", updatedChat);
+        // find the other member (not current user)
+        const reciverUserInfo = members.find(
+            (m) => m._id.toString() !== req.user?._id.toString()
+        );
+
+
+
+        io.to(socketUserStore[reciverUserInfo?._id.toString() as string]).emit("message:receive", message);
+
+        io.emit(`chat:receive:${chatFromDB?._id.toString()}`, updatedChat);
 
         return sendResponse(res, {
             success: false,
             status: 200,
             message: "No messages found",
-            data: {
-                chat: updatedChat,
-                message,
-            },
+            data: message,
         });
     }
 
