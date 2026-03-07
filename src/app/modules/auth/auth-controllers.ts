@@ -24,6 +24,7 @@ const getOTP: RequestHandler = catchAsync(async (req, res) => {
   // create otp
   const otp = await authService.getOTP(req.body);
 
+  console.log(otp)
   // send response
   sendResponse(res, {
     success: true,
