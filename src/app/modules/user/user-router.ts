@@ -29,6 +29,14 @@ userRouter.get(
   userControllers.getUserProfile,
 );
 
+
+userRouter.get(
+  "/all-users",
+  authorizeApiMiddleware("user"),
+  userControllers.getAllUsers,
+);
+
+
 userRouter.get(
   "/:id",
   authorizeApiMiddleware("user"),

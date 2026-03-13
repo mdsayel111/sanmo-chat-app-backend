@@ -118,7 +118,7 @@ const globalErrorHandleMiddleware: ErrorRequestHandler = (
     errObj.statusCode = 401;
   }
 
-  console.log(err)
+  console.error(err)
 
   // send response if any error occur
   res.status(status).send({ success: false, ...errObj });

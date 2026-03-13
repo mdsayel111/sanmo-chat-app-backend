@@ -22,7 +22,7 @@ const userSchema = new Schema<TUser>(
       },
       required: false,
     },
-    isDeleted: { type: Boolean, required: false, select: false },
+    isDeleted: { type: Boolean, default: false, select: false },
   },
   { timestamps: true },
 );

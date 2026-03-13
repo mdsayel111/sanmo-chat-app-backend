@@ -30,25 +30,23 @@ io.use(authorizeSocketMiddleware("user"));
 
 // 🔌 Socket connection
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
 
   socketUserStore[socket.user._id] = socket.id;
 
   // registerChatHandlers(io, socket);
   registerCallHandlers(socket);
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
   });
 
 });
 
 // handle unhandledRejection
 process.on("unhandledRejection", (reason) => {
-  console.log("Unhandled Rejection:", reason);
+  console.error("Unhandled Rejection:", reason);
 
   if (server) {
     server.close(() => {
-      console.log("Server closed due to unhandled rejection");
+      console.error("Server closed due to unhandled rejection");
       process.exit(1);
     });
   } else {
@@ -58,7 +56,7 @@ process.on("unhandledRejection", (reason) => {
 
 // handle uncaughtException
 process.on("uncaughtException", (error) => {
-  console.log("Uncaught Exception:", error);
+  console.error("Uncaught Exception:", error);
   process.exit(1);
 });
 
@@ -68,14 +66,12 @@ async function main() {
     // connect MongoDB
     await mongoose.connect(config.dbUrl as string);
 
-    console.log("MongoDB connected");
-
     // start server
     server = httpServer.listen(port, () => {
       console.log(`Server is listening on port ${port}`);
     });
   } catch (error) {
-    console.log("Server startup error:", error);
+    console.error("Server startup error:", error);
   }
 }
 

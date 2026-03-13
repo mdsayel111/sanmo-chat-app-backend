@@ -42,15 +42,21 @@ const getSingleUserById: RequestHandler = catchAsync(async (req, res) => {
   // get user profile
   const userInfo = await userService.getUserProfileById(id);
 
-  // res.status(200).json({
-  //   success: true,
-  //   message: "User profile retrieved successfully",
-  //   data: userInfo,
-  // });
   sendResponse(res, {
     success: true,
     message: "User profile retrieved successfully",
     data: userInfo,
+  });
+});
+
+const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
+
+  // get user profile
+  const users = await userService.getAllUsers(req?.user?._id as string);
+  sendResponse(res, {
+    success: true,
+    message: "User profile retrieved successfully",
+    data: users,
   });
 });
 
@@ -59,6 +65,7 @@ const userControllers = {
   updateUserProfile,
   getUserProfile,
   getSingleUserById,
+  getAllUsers,
 };
 
 export default userControllers;

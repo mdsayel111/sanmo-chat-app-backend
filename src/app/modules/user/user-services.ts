@@ -68,11 +68,17 @@ const getUserProfileById = async (id: string) => {
   return user.toObject();
 };
 
+const getAllUsers = async (currentUserId: string) => {
+  const users = await User.find({ isDeleted: false, _id: { $ne: currentUserId } }).select("-password -isDeleted");
+  return users;
+}
+
 // user services
 const userService = {
   updateUserProfile,
   getUserProfile,
-  getUserProfileById
+  getUserProfileById,
+  getAllUsers,
 };
 
 export default userService;
