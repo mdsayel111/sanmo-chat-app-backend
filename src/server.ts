@@ -67,7 +67,7 @@ async function main() {
     await mongoose.connect(config.dbUrl as string);
 
     // start server
-    server = httpServer.listen(port, () => {
+    server = httpServer.listen(Number(port), "0.0.0.0", () => {
       console.log(`Server is listening on port ${port}`);
     });
   } catch (error) {
