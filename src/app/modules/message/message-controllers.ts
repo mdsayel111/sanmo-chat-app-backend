@@ -8,7 +8,7 @@ import { Message } from "./message-model";
 // get all messages middleware
 import { Types } from "mongoose";
 import { io } from "../../../server";
-import { socketUserStore } from "../../../temporaty-stores/socket";
+import { socketUserStore } from "../../../stores/socket";
 
 const getAllMessages: RequestHandler = catchAsync(async (req, res) => {
     const { type, id } = req.params;

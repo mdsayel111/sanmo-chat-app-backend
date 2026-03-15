@@ -59,7 +59,7 @@ export const authorizeSocketMiddleware =
 
         next();
       } catch (error) {
-        console.log(error)
+        console.error(error)
         next(new Error("Invalid or expired token"));
       }
     };

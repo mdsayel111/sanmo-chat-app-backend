@@ -53,6 +53,7 @@ const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
 
   // get user profile
   const users = await userService.getAllUsers(req?.user?._id as string);
+  
   sendResponse(res, {
     success: true,
     message: "User profile retrieved successfully",

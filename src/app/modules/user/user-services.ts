@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { deleteFileIfExists } from "../../../lib/multer";
+import { socketUserStore } from "../../../stores/socket";
 import AppError from "../../custom-error/app-error";
 import { TUser } from "./user-interfaces";
 import { User } from "./user-model";
@@ -70,7 +71,13 @@ const getUserProfileById = async (id: string) => {
 
 const getAllUsers = async (currentUserId: string) => {
   const users = await User.find({ isDeleted: false, _id: { $ne: currentUserId } }).select("-password -isDeleted");
-  return users;
+  const socketUserIds = Object.keys(socketUserStore);
+  const activeUsers = users.filter((user) => socketUserIds.includes(user._id.toString()));
+  const inactiveUsers = users.filter((user) => !socketUserIds.includes(user._id.toString()));
+  return {
+    activeUsers,
+    inactiveUsers,
+  };
 }
 
 // user services

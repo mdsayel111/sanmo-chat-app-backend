@@ -6,7 +6,7 @@ import { Server as SocketIOServer } from "socket.io";
 import app from "./app";
 import { authorizeSocketMiddleware } from "./app/middlewares/HOF-middlewares/authorization-middleware";
 import config from "./config";
-import { initIO, socketUserStore } from "./temporaty-stores/socket";
+import { initIO, socketUserStore } from "./stores/socket";
 import { registerCallHandlers } from "./app/modules/call/call-socket";
 
 const port = config.port;
@@ -30,14 +30,23 @@ io.use(authorizeSocketMiddleware("user"));
 
 // 🔌 Socket connection
 io.on("connection", (socket) => {
-
+  // Mark user as active
   socketUserStore[socket.user._id] = socket.id;
 
-  // registerChatHandlers(io, socket);
-  registerCallHandlers(socket);
-  socket.on("disconnect", () => {
-  });
+  // Notify all clients that this user connected
+  io.emit("userConnected", socket.user._id);
 
+  // Optional: you can log
+  // console.log(`${socket.user._id} connected`);
+
+  socket.on("disconnect", () => {
+    // Remove user from active store
+    delete socketUserStore[socket.user._id];
+
+    // Notify all clients that this user disconnected
+    io.emit("userDisconnected", socket.user._id);
+
+  });
 });
 
 // handle unhandledRejection
