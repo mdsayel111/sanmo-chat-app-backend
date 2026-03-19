@@ -3,6 +3,7 @@
 import { deleteFileIfExists } from "../../../lib/multer";
 import { socketUserStore } from "../../../stores/socket";
 import AppError from "../../custom-error/app-error";
+import { Chat } from "../chat/chat-mode";
 import { TUser } from "./user-interfaces";
 import { User } from "./user-model";
 
@@ -70,15 +71,63 @@ const getUserProfileById = async (id: string) => {
 };
 
 const getAllUsers = async (currentUserId: string) => {
-  const users = await User.find({ isDeleted: false, _id: { $ne: currentUserId } }).select("-password -isDeleted");
+  const users = await User.find({
+    isDeleted: false,
+    _id: { $ne: currentUserId },
+  }).select("-password -isDeleted");
+
+  // 🔹 Step 1: Get chats
+  const privateChats = await Chat.find({
+    type: "private",
+    members: currentUserId,
+  }).select("_id members");
+
+  // 🔹 Step 2: Build map
+  const chatMap = new Map<string, string>();
+
+  privateChats.forEach(chat => {
+    const otherUser = chat.members.find(
+      (m: any) => m.toString() !== currentUserId.toString()
+    );
+
+    if (otherUser) {
+      chatMap.set(otherUser.toString(), chat._id.toString());
+    }
+  });
+
   const socketUserIds = Object.keys(socketUserStore);
-  const activeUsers = users.filter((user) => socketUserIds.includes(user._id.toString()));
-  const inactiveUsers = users.filter((user) => !socketUserIds.includes(user._id.toString()));
+
+  // 🔹 Step 3: Format users (UPDATED)
+  const formattedUsers = users.map(user => {
+    const userId = user._id.toString();
+    const chatId = chatMap.get(userId);
+
+    return {
+      _id: user._id, // ✅ always userId
+      name: user.name,
+      phone: user.phone,
+      image: user.image,
+
+      // 🔥 NEW FIELDS
+      chatId: chatId || user._id,
+      chatType: chatId ? "private" : "user",
+
+      // 🔥 optional helper
+      hasChat: !!chatId,
+      isActive: socketUserIds.includes(userId),
+    };
+  });
+
+
+  // 🔹 Step 4: Split active/inactive
+  const activeUsers = formattedUsers.filter(u => u.isActive);
+  const inactiveUsers = formattedUsers.filter(u => !u.isActive);
+
   return {
     activeUsers,
     inactiveUsers,
   };
-}
+};
 
 // user services
 const userService = {

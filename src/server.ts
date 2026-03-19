@@ -30,6 +30,7 @@ io.use(authorizeSocketMiddleware("user"));
 
 // 🔌 Socket connection
 io.on("connection", (socket) => {
+  console.log("connect", socket.user._id);
   // Mark user as active
   socketUserStore[socket.user._id] = socket.id;
 
