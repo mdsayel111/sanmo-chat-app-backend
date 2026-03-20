@@ -107,6 +107,7 @@ const getAllUsers = async (currentUserId: string) => {
       name: user.name,
       phone: user.phone,
       image: user.image,
+      designation: user.designation,
 
       // 🔥 NEW FIELDS
       chatId: chatId || user._id,
@@ -117,7 +118,6 @@ const getAllUsers = async (currentUserId: string) => {
       isActive: socketUserIds.includes(userId),
     };
   });
-
 
   // 🔹 Step 4: Split active/inactive
   const activeUsers = formattedUsers.filter(u => u.isActive);

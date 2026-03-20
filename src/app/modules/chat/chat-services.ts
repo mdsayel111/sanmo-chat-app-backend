@@ -43,11 +43,9 @@ const getSearchChats = async (searchQuery: string, phone: string) => {
         type: "private",
         members: currentUserId,
     })
-        .populate({
-            path: "members",
-            select: "name phone image",
-        })
+        .populate("lastMessage members")
         .select("members lastMessage")
+
 
     const formattedPrivateChats = privateChats.map(chat => {
         const otherUser = (chat.members as any[]).find(
@@ -80,6 +78,7 @@ const getSearchChats = async (searchQuery: string, phone: string) => {
             searchField,
             matchScore,
             lastMessage: chat.lastMessage,
+            members: chat.members,
         };
     });
     /*
@@ -102,6 +101,7 @@ const getSearchChats = async (searchQuery: string, phone: string) => {
             { phone: { $regex: searchQuery, $options: "i" } },
         ],
     })
+        .populate("lastMessage members")
         .select("name phone image")
         .limit(30);
 
@@ -131,6 +131,7 @@ const getSearchChats = async (searchQuery: string, phone: string) => {
             image: user.image,
             searchField,
             matchScore,
+            members: [user],
         };
     });
 
@@ -145,6 +146,7 @@ const getSearchChats = async (searchQuery: string, phone: string) => {
         name: { $regex: searchQuery, $options: "i" },
         members: currentUserId,
     })
+        .populate("lastMessage members")
         .select("name image lastMessage")
         .limit(30);
 
@@ -160,6 +162,7 @@ const getSearchChats = async (searchQuery: string, phone: string) => {
             searchField: nameMatch > 0 ? "name" : "",
             matchScore: nameMatch,
             lastMessage: group.lastMessage,
+            members: group.members,
         };
     });
 
